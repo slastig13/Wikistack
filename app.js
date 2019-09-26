@@ -16,8 +16,9 @@ app.use(express.urlencoded({ extended: false }))
 app.use("/wiki", wikiRoutes);
 app.use("/user", userRoutes);
 
-app.get('/', (req, res, next) => {
-  res.redirect('/wiki');
+app.get('/', async (req, res, next) => {
+  const allPages = await models.Page.findAll();
+  res.send(views.main(allPages))
 });
 
 
