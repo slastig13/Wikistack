@@ -1,14 +1,10 @@
 const express = require('express');
 const morgan = require('morgan');
-const routes = require('./routes/routes')
+const wikiRoutes = require('./routes/wiki');
+const userRoutes = require('./routes/user');
 const models = require('./models');
 const PORT = 1337;
-// const { db } = require('./models');
-
-// db.authenticate().
-// then(() => {
-//   console.log('connected to the database');
-// })
+const views = require('./views/index.js');
 
 const app = express();
 
@@ -17,7 +13,13 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(express.urlencoded({ extended: false }))
 
-app.use("/", routes);
+app.use("/wiki", wikiRoutes);
+app.use("/user", userRoutes);
+
+app.get('/', (req, res, next) => {
+  res.redirect('/wiki');
+});
+
 
 async function init() {
   await models.db.sync()
@@ -28,7 +30,7 @@ async function init() {
 }
 
 
-init()
+init();
 
 
 
