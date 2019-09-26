@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const views = require('../views/index.js')
-const { Page } = require("../models")
+const { Page, User } = require("../models")
 // const slugify = require("../slug")
 // const app = require()
 
@@ -11,12 +11,27 @@ router.get('/', (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
 
+  const name = req.body.author;
+
+  let foundAuthor = await User.findOne({
+    where: {name, email: req.body.email}
+  });
+
+  if (!foundAuthor) {
+     foundAuthor = new User({
+      name,
+      email: req.body.email
+    })
+    await foundAuthor.save();
+  }
+
   const page = new Page({
     title: req.body.title,
-    // slug: slugify(req.body.title),
     content: req.body.content,
     status: req.body.status
   })
+
+  page.setAuthor(foundAuthor);
 
   try {
     await page.save();

@@ -31,6 +31,8 @@ Page.beforeValidate((instance, options) => {
   instance.slug = slugify(instance.title)
 })
 
+Page.belongsTo(User, {as: 'author'});
+
 module.exports = {
   db, Page, User
 }
